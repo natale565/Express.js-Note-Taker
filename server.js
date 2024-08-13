@@ -1,13 +1,8 @@
 const express = require('express');
-
 const fs = require('fs');
-
 const path = require('path');
-
 const uniqid = require('uniqid');
-
 const PORT = 3001;
-
 const app = express();
 
 // Middleware
@@ -33,3 +28,31 @@ app.get("/api/notes", function (req, res) {
       res.json(jsonData);
     });
   });
+
+  app.post("/api/notes", function (req, res) {
+    fs.readFile("Develop/db/db.json", "utf8", (err, data) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send("Error reading the database.");
+        }
+
+        const jsonData = JSON.parse(data);
+        const newNote = req.body;
+        newNote.id = uniqid(); // Assign a unique id to the new note
+
+        jsonData.push(newNote);
+
+        fs.writeFile("Develop/db/db.json", JSON.stringify(jsonData, null, 2), (err) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send("Error writing to the database.");
+            }
+
+            res.json(newNote);
+        });
+    });
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
