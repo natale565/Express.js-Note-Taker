@@ -5,6 +5,7 @@ const uniqid = require('uniqid');
 const PORT = process.env.PORT || 3001;
 const app = express();
 
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -38,7 +39,7 @@ app.get('/api/notes', function (req, res) {
 
         const jsonData = JSON.parse(data);
         const newNote = req.body;
-        newNote.id = uniqid(); // Assign a unique id to the new note
+        newNote.id = uniqid(); 
 
         jsonData.push(newNote);
 
